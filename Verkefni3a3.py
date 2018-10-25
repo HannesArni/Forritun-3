@@ -1,3 +1,8 @@
+# coding=UTF-8
+
+# Hannes Árni Hannesson 25/10/18
+# Hér er stýrt geimskipi sem á að skjóta niður græna óvini
+
 import pygame
 import random
 from color_library import *
@@ -34,6 +39,7 @@ class Missile(pygame.sprite.Sprite):
 
 # Lets load the game images and put them into variables
 player_image = pygame.image.load('Images3/player_pad.png')
+player_image.fill((0, 0, 255, 255), special_flags=pygame.BLEND_ADD)
 enemy_image = pygame.image.load('Images3/green_ball.png')
 missile_image = pygame.image.load('Images3/missile.png')
 
@@ -49,19 +55,15 @@ missile_list = pygame.sprite.Group()
 # All blocks and the player block as well.
 all_sprites_list = pygame.sprite.Group()
 
-# Makes 8 enemies 
-for i in range(8):
-    enemies = Enemy(random.randrange(20, 280, 18), random.randrange(0, 40, 18))
-    asteroid_list.add(enemies)
-    all_sprites_list.add(enemies)
 
 # Create a player block
-player = Player(150, 580)
+player = Player(150, 500)
 all_sprites_list.add(player)
 
 # Used to manage how fast the screen updates
 clock = pygame.time.Clock()
 score = 0
+counter = 0
 
 running = True
 
@@ -72,10 +74,16 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 shot = Missile()
-                shot.rect.x = player.rect.x + 30
-                shot.rect.y = player.rect.y - 15
+                shot.rect.x = player.rect.x + 98
+                shot.rect.y = player.rect.y
                 missile_list.add(shot)
                 all_sprites_list.add(shot)
+    if counter >= random.randrange(30, 60):
+        enemies = Enemy(random.randrange(20, 280, 18), random.randrange(0, 40, 18))
+        asteroid_list.add(enemies)
+        all_sprites_list.add(enemies)
+        counter = 0
+    counter += 1
 
     key = pygame.key.get_pressed()
     if key[pygame.K_LEFT]:
